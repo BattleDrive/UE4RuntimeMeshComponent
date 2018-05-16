@@ -17,6 +17,11 @@ private:
 	TArray<FRuntimeMeshSectionCreateDataInterface*> SectionCreationData;
 
 public:
+	SIZE_T GetTypeHash() const override
+	{
+		static size_t UniquePointer;
+		return reinterpret_cast<size_t>(&UniquePointer);
+	}
 
 	FRuntimeMeshSceneProxy(URuntimeMeshComponent* Component)
 		: FPrimitiveSceneProxy(Component)

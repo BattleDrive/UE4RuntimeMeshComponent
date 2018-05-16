@@ -350,7 +350,7 @@ void URuntimeMeshLibrary::GenerateTessellationIndexBuffer(const TArray<FVector>&
 
 
 
-static int32 GetNewIndexForOldVertIndex(int32 MeshVertIndex, TMap<int32, int32>& MeshToSectionVertMap, const FPositionVertexBuffer* PosBuffer, const FStaticMeshVertexBuffer* VertBuffer, const FColorVertexBuffer* ColorBuffer, IRuntimeMeshVerticesBuilder* Vertices)
+static int32 GetNewIndexForOldVertIndex(int32 MeshVertIndex, TMap<int32, int32>& MeshToSectionVertMap, const FStaticMeshVertexBuffers& VertexBuffers, IRuntimeMeshVerticesBuilder* Vertices)
 {
 	int32* NewIndexPtr = MeshToSectionVertMap.Find(MeshVertIndex);
 	if (NewIndexPtr != nullptr)
@@ -362,18 +362,18 @@ static int32 GetNewIndexForOldVertIndex(int32 MeshVertIndex, TMap<int32, int32>&
 		// Copy position
 		int32 SectionVertIndex = Vertices->MoveNextOrAdd();
 
-		Vertices->SetPosition(PosBuffer->VertexPosition(MeshVertIndex));
-		Vertices->SetNormal(VertBuffer->VertexTangentZ(MeshVertIndex));
-		Vertices->SetTangent(VertBuffer->VertexTangentX(MeshVertIndex));
-		if (ColorBuffer && ColorBuffer->GetNumVertices())
+		Vertices->SetPosition(VertexBuffers.PositionVertexBuffer.VertexPosition(MeshVertIndex));
+		Vertices->SetNormal(VertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(MeshVertIndex));
+		Vertices->SetTangent(VertexBuffers.StaticMeshVertexBuffer.VertexTangentX(MeshVertIndex));
+		if (VertexBuffers.ColorVertexBuffer.GetNumVertices())
 		{
-			Vertices->SetColor(ColorBuffer->VertexColor(MeshVertIndex));
+			Vertices->SetColor(VertexBuffers.ColorVertexBuffer.VertexColor(MeshVertIndex));
 		}
 
 		// copy all uv channels
-		for (uint32 Index = 0; Index < VertBuffer->GetNumTexCoords(); Index++)
+		for (uint32 Index = 0; Index < VertexBuffers.StaticMeshVertexBuffer.GetNumTexCoords(); Index++)
 		{
-			Vertices->SetUV(Index, VertBuffer->GetVertexUV(MeshVertIndex, Index));
+			Vertices->SetUV(Index, VertexBuffers.StaticMeshVertexBuffer.GetVertexUV(MeshVertIndex, Index));
 		}
 
 		MeshToSectionVertMap.Add(MeshVertIndex, SectionVertIndex);
@@ -421,7 +421,7 @@ void URuntimeMeshLibrary::GetSectionFromStaticMesh(UStaticMesh* InMesh, int32 LO
 					uint32 MeshVertIndex = Indices[i];
 
 					// See if we have this vert already in our section vert buffer, and copy vert in if not 
-					int32 SectionVertIndex = GetNewIndexForOldVertIndex(MeshVertIndex, MeshToSectionVertMap, &LOD.PositionVertexBuffer, &LOD.VertexBuffer, &LOD.ColorVertexBuffer, Vertices);
+					int32 SectionVertIndex = GetNewIndexForOldVertIndex(MeshVertIndex, MeshToSectionVertMap, LOD.VertexBuffers, Vertices);
 
 					// Add to index buffer
 					Triangles->AddIndex(SectionVertIndex);
@@ -442,7 +442,7 @@ void URuntimeMeshLibrary::GetSectionFromStaticMesh(UStaticMesh* InMesh, int32 LO
 						uint32 MeshVertIndex = AdjacencyIndices[i];
 
 						// See if we have this vert already in our section vert buffer, and copy vert in if not 
-						int32 SectionVertIndex = GetNewIndexForOldVertIndex(MeshVertIndex, MeshToSectionVertMap, &LOD.PositionVertexBuffer, &LOD.VertexBuffer, &LOD.ColorVertexBuffer, Vertices);
+						int32 SectionVertIndex = GetNewIndexForOldVertIndex(MeshVertIndex, MeshToSectionVertMap, LOD.VertexBuffers, Vertices);
 
 						// Add to index buffer
 						AdjacencyTriangles->AddIndex(SectionVertIndex);

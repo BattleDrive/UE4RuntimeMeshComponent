@@ -75,7 +75,7 @@ protected:
 public:
 	FRuntimeMeshSectionProxy(FSceneInterface* InScene, EUpdateFrequency InUpdateFrequency, bool bInIsVisible, bool bInCastsShadow, UMaterialInterface* InMaterial, FMaterialRelevance InMaterialRelevance) :
 		bIsVisible(bInIsVisible), bCastsShadow(bInCastsShadow), UpdateFrequency(InUpdateFrequency), Material(InMaterial), MaterialRelevance(InMaterialRelevance),
-		PositionVertexBuffer(nullptr), VertexBuffer(InUpdateFrequency), IndexBuffer(InUpdateFrequency), VertexFactory(this) 
+		PositionVertexBuffer(nullptr), VertexBuffer(InUpdateFrequency), IndexBuffer(InUpdateFrequency), VertexFactory(InScene->GetFeatureLevel(), this)
 	{ 
 		bShouldUseAdjacency = RequiresAdjacencyInformation(InMaterial, VertexFactory.GetType(), InScene->GetFeatureLevel());
 	}

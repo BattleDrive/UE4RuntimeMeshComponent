@@ -153,7 +153,12 @@ class FRuntimeMeshVertexFactory : public FLocalVertexFactory
 {
 public:
 
-	FRuntimeMeshVertexFactory(FRuntimeMeshVisibilityInterface* InSectionParent) : SectionParent(InSectionParent) { }
+	FRuntimeMeshVertexFactory(ERHIFeatureLevel::Type InFeatureLevel, FRuntimeMeshVisibilityInterface* InSectionParent) :
+		FLocalVertexFactory(InFeatureLevel, "FRuntimeMeshVertexFactory"),
+		SectionParent(InSectionParent)
+	{
+		bSupportsManualVertexFetch = false;
+	}
 		
 	/** Init function that can be called on any thread, and will do the right thing (enqueue command if called on main thread) */
 	void Init(const RuntimeMeshVertexStructure VertexStructure)
@@ -176,7 +181,7 @@ public:
 	}
 
 	/* Gets the section visibility for static sections */
-	virtual uint64 GetStaticBatchElementVisibility(const class FSceneView& View, const struct FMeshBatch* Batch) const override
+	virtual uint64 GetStaticBatchElementVisibility(const class FSceneView& View, const struct FMeshBatch* Batch, const void* ViewCustomData) const override
 	{
 		return SectionParent->ShouldRender();
 	}
