@@ -200,9 +200,9 @@ public:
 		if (UVIndex < NumUVs)
 		{
 #if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 19
-			DataType.TextureCoordinates.Add(FVertexStreamComponent(this, UVSizeInBytes * UVIndex, UVStride, UVDoubleWideVertexElementType, EVertexStreamUsage::ManualFetch));
+			DataType.TextureCoordinates.Add(FVertexStreamComponent(this, UVSizeInBytes * UVIndex, UVStride, UVVertexElementType, EVertexStreamUsage::ManualFetch));
 #else
-			DataType.TextureCoordinates.Add(FVertexStreamComponent(this, UVSizeInBytes * UVIndex, UVStride, UVDoubleWideVertexElementType));
+			DataType.TextureCoordinates.Add(FVertexStreamComponent(this, UVSizeInBytes * UVIndex, UVStride, UVVertexElementType));
 #endif
 		}
 
