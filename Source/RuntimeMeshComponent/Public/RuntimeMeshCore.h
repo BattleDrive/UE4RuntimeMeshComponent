@@ -6,7 +6,7 @@
 #include "Components/MeshComponent.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "Stats/Stats.h"
-#include "CriticalSection.h"
+#include "HAL/CriticalSection.h"
 #include "RuntimeMeshCore.generated.h"
 
 DECLARE_STATS_GROUP(TEXT("RuntimeMesh"), STATGROUP_RuntimeMesh, STATCAT_Advanced);
