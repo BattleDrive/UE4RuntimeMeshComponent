@@ -1234,7 +1234,11 @@ void FRuntimeMeshData::UpdateLocalBounds()
 
 FRuntimeMeshProxyPtr FRuntimeMeshData::EnsureProxyCreated(ERHIFeatureLevel::Type InFeatureLevel)
 {
+#if WITH_EDITOR
+	if (!RenderProxy.IsValid() || RenderProxy->GetFeatureLevel() != InFeatureLevel)
+#else
 	if (!RenderProxy.IsValid())
+#endif
 	{
 		RenderProxy = MakeShareable(new FRuntimeMeshProxy(InFeatureLevel), FRuntimeMeshRenderThreadDeleter<FRuntimeMeshProxy>());
 		Initialize();
